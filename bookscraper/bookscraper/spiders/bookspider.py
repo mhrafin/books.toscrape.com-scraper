@@ -15,7 +15,7 @@ class BookspiderSpider(scrapy.Spider):
                 book_url = "https://books.toscrape.com/" + book_href
             else:
                 book_url = "https://books.toscrape.com/catalogue/" + book_href
-            yield response.follow(book_url, callback=self.parse_book_url)
+            yield scrapy.Request(book_url, callback=self.parse_book_url)
 
         # next_page = response.css('li.next a').attrib['href']
         # if next_page is not None:
@@ -31,18 +31,17 @@ class BookspiderSpider(scrapy.Spider):
 
         book_item = BookItem()
 
-        book_item["url"] = response.url,
-        book_item["title"] = response.css(".product_main h1::text").get(),
+        book_item["url"] = response.url
+        book_item["title"] = response.css(".product_main h1::text").get()
         book_item["upc"] = table_rows[0].css("td ::text").get()
-        book_item["product_type"] = table_rows[1].css('td ::text').get(),
-        book_item["price_excl_tax"] = table_rows[2].css('td ::text').get(),
-        book_item["price_incl_tax"] = table_rows[3].css('td ::text').get(),
-        book_item["tax"] = table_rows[4].css('td ::text').get(),
-        book_item["availability"] = table_rows[5].css('td ::text').get(),
-        book_item["num_reviews"] = table_rows[6].css('td ::text').get(),
-        book_item["stars"] = book.css("p.star-rating").attrib["class"],
-        book_item["category"] = response.xpath("//ul[@class='breadcrumb']/li[2]/a//text()").get(),
-        book_item["description"] = response.xpath("//article/p[1]//text()").get(),
+        book_item["product_type"] = table_rows[1].css('td ::text').get()
+        book_item["price_excl_tax"] = table_rows[2].css('td ::text').get()
+        book_item["price_incl_tax"] = table_rows[3].css('td ::text').get()
+        book_item["tax"] = table_rows[4].css('td ::text').get()
+        book_item["availability"] = table_rows[5].css('td ::text').get()
+        book_item["num_reviews"] = table_rows[6].css('td ::text').get()
+        book_item["stars"] = book.css("p.star-rating").attrib["class"]
+        book_item["category"] = response.xpath("//ul[@class='breadcrumb']/li[2]/a//text()").get()
+        book_item["description"] = response.xpath("//article/p[1]//text()").get()
         book_item["price"] = book.css("p.price_color ::text").get()
-
         yield book_item

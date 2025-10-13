@@ -24,11 +24,11 @@ class BookscraperPipeline:
         adapter["product_type"] = adapter["product_type"].lower()
 
         ## Clean price data
-        price_keys = ["price", "price_excl_tax", "price_incl_tax"]
+        price_keys = ["price", "price_excl_tax", "price_incl_tax", "tax"]
         for price_key in price_keys:
             value = adapter.get(price_key)
             value = value.replace("£", "")
-            adapter[field_name] = float(value)
+            adapter[price_key] = float(value)
 
         ## Extract availability from text
         availability_text = adapter.get("availability")
